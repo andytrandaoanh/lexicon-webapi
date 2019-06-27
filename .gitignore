@@ -3,4 +3,5 @@ include/
 Lib/
 Scripts/
 static/
-templates
+templates/
+pyvenv.cfg
