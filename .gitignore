@@ -1,7 +1,8 @@
+*.cfg
 __pycache__/
 include/
 Lib/
 Scripts/
 static/
 templates/
-*.cfg
+
