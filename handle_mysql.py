@@ -12,3 +12,8 @@ def fetchTopWords(mysql):
 	sql_statement = "select * from words order by word_form limit 100;"
 	resp = fetch_data(mysql, sql_statement)
 	return  resp
+
+def fetchAllBooks(mysql):
+	sql_statement = "select * from books order by book_id desc;"
+	resp = fetch_data(mysql, sql_statement)
+	return  resp

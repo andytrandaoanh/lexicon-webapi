@@ -4,4 +4,4 @@ Lib/
 Scripts/
 static/
 templates/
-pyvenv.cfg
+*.cfg

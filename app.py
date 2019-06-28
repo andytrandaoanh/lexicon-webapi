@@ -30,7 +30,12 @@ def words():
 @app.route('/query/<word>',  methods = ['GET'])
 def query_word(word):
 	if request.method == 'GET':
-		return handleSQL.fetchAllWordsLike(mysql, word) 		
+		return handleSQL.fetchAllWordsLike(mysql, word) 
+
+@app.route('/books',  methods = ['GET'])
+def books():
+	if request.method == 'GET':
+		return handleSQL.fetchAllBooks(mysql) 				
 
 @app.route('/detail/<word>',  methods = ['GET'])
 def detail_word(word):
