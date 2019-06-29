@@ -42,3 +42,14 @@ def detail_word(word):
 	if request.method == 'GET':
 		return handleMongo.fetchWordDetail(mongo, word)
 		
+@app.route('/book/update', methods = ['POST'])
+def save_book_edit():
+		if request.method == 'POST':
+			data = request.get_json()
+			return handleSQL.saveBookEdit(mysql, data)
+
+@app.route('/book/new', methods = ['POST'])
+def save_book_new():
+		if request.method == 'POST':
+			data = request.get_json()
+			return handleSQL.saveBookNew(mysql, data)
