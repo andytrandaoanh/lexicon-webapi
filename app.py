@@ -59,4 +59,5 @@ def save_book_new():
 @app.route('/quotes/book/<bookid>',  methods = ['GET'])
 def get_default_quotes(bookid):
 	if request.method == 'GET':
+		#print('bookid:', bookid)
 		return handleSQL.fetchDefaultQuotes(mysql, bookid) 				
