@@ -32,16 +32,18 @@ def query_word(word):
 	if request.method == 'GET':
 		return handleSQL.fetchAllWordsLike(mysql, word) 
 
-@app.route('/books',  methods = ['GET'])
-def books():
-	if request.method == 'GET':
-		return handleSQL.fetchAllBooks(mysql) 				
-
 @app.route('/detail/<word>',  methods = ['GET'])
 def detail_word(word):
 	if request.method == 'GET':
 		return handleMongo.fetchWordDetail(mongo, word)
 		
+
+@app.route('/books',  methods = ['GET'])
+def books():
+	if request.method == 'GET':
+		return handleSQL.fetchAllBooks(mysql) 				
+
+
 @app.route('/book/update', methods = ['POST'])
 def save_book_edit():
 		if request.method == 'POST':
@@ -53,3 +55,8 @@ def save_book_new():
 		if request.method == 'POST':
 			data = request.get_json()
 			return handleSQL.saveBookNew(mysql, data)
+
+@app.route('/quotes/book/<bookid>',  methods = ['GET'])
+def get_default_quotes(bookid):
+	if request.method == 'GET':
+		return handleSQL.fetchDefaultQuotes(mysql, bookid) 				

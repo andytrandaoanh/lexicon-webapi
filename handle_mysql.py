@@ -2,6 +2,15 @@ from mysql_data_process import fetch_data, update_data, get_next_id
 from pprint import pprint
 
 
+
+def fetchDefaultQuotes(mysql, bookid):	
+	sql_statement = "select * from sentences where book_id = 1 LIMIT 25;"
+	resp = fetch_data(mysql, sql_statement)
+	return  resp
+
+
+
+
 def fetchAllWordsLike(mysql, word):	
 	sql_statement = "select * from pure_words where word_form like '" + word +"%' order by word_form;"
 	resp = fetch_data(mysql, sql_statement)
