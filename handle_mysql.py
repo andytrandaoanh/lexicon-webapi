@@ -3,7 +3,7 @@ from pprint import pprint
 
 
 def getQuotesByIndex(mysql, bookID, indexNumber):
-	sql_statement = "select * from sentences where book_id = " + str(bookID) +  " and sent_num >= " + str(indexNumber) + " LIMIT 25"
+	sql_statement = "select * from sentences where book_id = " + str(bookID) +  " and sent_num >= " + str(indexNumber) + " LIMIT 6"
 	resp = fetch_data(mysql, sql_statement)
 	return  resp
 
