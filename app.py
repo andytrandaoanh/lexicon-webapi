@@ -61,3 +61,9 @@ def get_default_quotes(bookid):
 	if request.method == 'GET':
 		#print('bookid:', bookid)
 		return handleSQL.fetchDefaultQuotes(mysql, bookid) 				
+
+@app.route('/quotes/<bookID>/index/<indexNum>',  methods = ['GET'])
+def get_quotes_by_index(bookID, indexNum):
+	if request.method == 'GET':
+		#print('bookid:', bookid)
+		return handleSQL.getQuotesByIndex(mysql, bookID, indexNum) 				
