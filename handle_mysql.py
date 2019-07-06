@@ -4,7 +4,7 @@ from pprint import pprint
 
 
 def fetchDefaultQuotes(mysql, bookid):	
-	sql_statement = "select * from sentences where book_id = " + str(bookid) + " LIMIT 25;"
+	sql_statement = "select * from sentences where book_id = " + str(bookid) + " LIMIT 5;"
 	resp = fetch_data(mysql, sql_statement)
 	return  resp
 
