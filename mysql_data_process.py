@@ -1,6 +1,23 @@
 from flask import jsonify
 from pprint import pprint
 
+
+def fetch_raw_data(mysql, query_statement):
+	try:
+		conn = mysql.connect()
+		cursor =conn.cursor()
+
+		cursor.execute(query_statement)
+		data = cursor.fetchall()
+		return  data
+	except Exception as e:
+		print(e)
+	finally:		
+		cursor.close() 
+		conn.close()
+
+
+
 def fetch_data(mysql, query_statement):
 	try:
 		conn = mysql.connect()

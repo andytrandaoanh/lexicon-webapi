@@ -66,4 +66,5 @@ def get_default_quotes(bookid):
 def get_quotes_by_index(bookID, indexNum):
 	if request.method == 'GET':
 		#print('bookid:', bookid)
-		return handleSQL.getQuotesByIndex(mysql, bookID, indexNum) 				
+		return handleSQL.getQuotesByIndex(mysql, bookID, indexNum) 
+		#return ("debug", 200)			
