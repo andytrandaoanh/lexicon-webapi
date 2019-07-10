@@ -68,3 +68,9 @@ def get_quotes_by_index(bookID, indexNum):
 		#print('bookid:', bookid)
 		return handleSQL.getQuotesByIndex(mysql, bookID, indexNum) 
 		#return ("debug", 200)			
+
+@app.route('/definition/<word>',  methods = ['GET'])
+def get_definition(word):
+	if request.method == 'GET':
+		return handleSQL.fetchDefinition(mysql, word) 
+

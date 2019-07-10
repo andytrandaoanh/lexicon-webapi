@@ -4,6 +4,12 @@ from pprint import pprint
 from flask import jsonify
 
 
+def fetchDefinition(mysql, word):
+	sql_statement = "select * from google_defs where word like '" + word + "'"
+	resp = fetch_data(mysql, sql_statement)
+	return  resp
+
+
 def getSentNumberForQuey(sentList):
 	queryEnd = '('
 	freshRun = True
