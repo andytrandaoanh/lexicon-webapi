@@ -5,7 +5,16 @@ from flask import jsonify
 
 
 def fetchDefinition(mysql, word):
-	sql_statement = "select * from google_defs where word like '" + word + "'"
+	sql_statement = "select dict_form from links where word_form like '" + word + "'"
+	data = fetch_raw_data(mysql, sql_statement)
+	queryEnd = '('
+	if (data):
+		for item in data:
+			queryEnd += "'" + item['dict_form'] + "',"
+	queryEnd += "'" + word + "')"
+	
+	#print(queryEnd)
+	sql_statement = "select * from google_defs where word in " + queryEnd
 	resp = fetch_data(mysql, sql_statement)
 	return  resp
 
