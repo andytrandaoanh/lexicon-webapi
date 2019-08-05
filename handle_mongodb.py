@@ -1,4 +1,5 @@
 from flask import jsonify
+from pprint import pprint
 
 def fetchWordDetail(mongo, word):
 	if (word):
@@ -15,3 +16,30 @@ def fetchWordDetail(mongo, word):
 		resp = None
 		resp.status_code = 400
 	return  resp
+
+
+
+
+
+def fetchGoogleDefinition(mongo, word):
+	if (word):
+		volumnName = 'google'
+		collection = mongo.db[volumnName]
+		data = collection.find({'word':word})
+		output = []
+		for doc in data:
+			newDoc = {}
+			for key in doc:
+				if key !=  '_id':
+					newDoc = doc[key]
+			output.append(newDoc)
+
+		#pprint(output)
+		resp = jsonify(output)
+		resp.status_code = 200
+		return  resp
+		#return ('hello', 200)
+	else:
+		resp = None
+		resp.status_code = 400
+	return  resp	
