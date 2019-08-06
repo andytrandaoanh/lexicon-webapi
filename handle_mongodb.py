@@ -30,9 +30,11 @@ def fetchGoogleDefinition(mongo, word):
 		for doc in data:
 			newDoc = {}
 			for key in doc:
+				#print('key', key)
 				if key !=  '_id':
-					newDoc = doc[key]
+					newDoc[key] = doc[key]
 			output.append(newDoc)
+			#output.append(doc)
 
 		#pprint(output)
 		resp = jsonify(output)
