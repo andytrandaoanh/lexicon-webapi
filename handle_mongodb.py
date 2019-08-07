@@ -59,13 +59,16 @@ def processDoc(doc):
 
 	#print('word header:', wordHeader)
 	#print('sense list:', senseList)
+	#print('length of sense list', len(senseList))
 	for sense in senseList:
 		wordObj = {}
 		wordObj['category'] = sense['category']
 		wordObj['meaning'] = sense['meaning']
 		for key in wordHeader:
 			wordObj[key] = wordHeader[key]
-			wordList.append(wordObj)
+		
+		wordList.append(wordObj)
+	
 	#pprint(wordList)
 
 	return wordList
@@ -80,13 +83,13 @@ def unpackData(data):
 				newDoc[key] = doc[key]
 		docList.append(newDoc)	
 	
-	dataOut = []
+	#dataOut = []
 	
-	for doc in docList:
+	#for doc in docList:
 		#pprint(doc)
-		dataOut += processDoc(doc)
+	#	dataOut += processDoc(doc)
 	#return None
-	return dataOut
+	return docList
 
 
 
@@ -96,9 +99,15 @@ def fetchGoogleDefinition(mongo, word):
 		volumnName = 'google'
 		collection = mongo.db[volumnName]
 		data = collection.find({'word':word})
-		output = unpackData(data)
-		#pprint(data)
-		resp = jsonify(output)
+		docList = unpackData(data)
+
+		#print('len:', len(docList))
+		outList = []
+
+		for doc in docList:
+			outList += processDoc(doc)
+			#pprint(wordList)
+		resp = jsonify(outList)
 		resp.status_code = 200
 		return  resp
 		#return ('hello', 200)
