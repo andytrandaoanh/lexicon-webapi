@@ -120,6 +120,7 @@ def fetchGoogleDefinition(mongo, word):
 def processLexiconMeanings(senses):
 	#print('\n', senses)
 	newSenseList = []
+	newExampleList = []
 	senseList = senses['senses']
 	#print(senseList)\
 	for senseObj in senseList:
@@ -130,13 +131,19 @@ def processLexiconMeanings(senses):
 		grammarNotes = ''
 		regionDomain = ''
 		wordRegister = ''
+		highLight = ''
+		exampleNumber = ''
+		exampleMeaning = ''
 
 		for key in senseObj:
 			print('sense key:', key)
 			if key == 'sense-number':
 				newObject['number'] = senseObj[key]
+				exampleNumber = senseObj[key]
 			elif key == 'meaning':
 				wordMeaning = senseObj[key]
+				exampleMeaning = senseObj[key]
+
 			elif key == 'spelling-variants':
 				wordVariant = ' ' + senseObj[key] + ' '
 			elif key == 'cross-reference':
@@ -147,16 +154,23 @@ def processLexiconMeanings(senses):
 				regionDomain = ' (' + senseObj[key].strip() + ') '	
 			elif key == 'register':
 				wordRegister = ' [' + senseObj[key].strip() + '] '	
-
+			elif key == 'highlight':
+				highLight = ' (' + senseObj[key].strip() + ') '	
 			elif key == 'examples':
 				newObject['example'] = senseObj[key][0]
+				newExObj={}
+				newExObj['number'] = exampleNumber + ' ' + exampleMeaning
+				exampleNumber = ''
+				exampleMeaning = ''
+				newExObj[key] = senseObj[key]
+				newExampleList.append(newExObj)
 		
 		newObject['meaning'] = wordVariant + crossReference + wordMeaning
-		newObject['notes'] = grammarNotes + regionDomain + wordRegister 
+		newObject['notes'] = grammarNotes + regionDomain + wordRegister + highLight
 
 		newSenseList.append(newObject)
 
-	return newSenseList
+	return (newSenseList, newExampleList)
 
 def processLexiconPhrases(phrases):
 	#print(phrases)
@@ -169,6 +183,7 @@ def processLexiconDoc(doc):
 	wordHeader = {}
 	wordFooter = {}
 	wordMeanings = []
+	moreExamples = []
 	wordPhrases = {}
 	headerCategoryList = []
 	headerPhraseList = []
@@ -187,14 +202,15 @@ def processLexiconDoc(doc):
 			headerPhraseList.append(key)
 		else:
 			headerCategoryList.append(key)
-			senseList = processLexiconMeanings(doc[key])
+			senseList, exampleList = processLexiconMeanings(doc[key])
+			moreExamples += exampleList
 			meaningObj = {'category': key, 'meanings': senseList}
 			wordMeanings.append(meaningObj)
 
 	wordHeader['categories'] = headerCategoryList
 	wordHeader['phrases'] = headerPhraseList
 
-	return {'header': wordHeader, 'meanings': wordMeanings, 'phrases': wordPhrases,  'footer': wordFooter}
+	return {'header': wordHeader, 'meanings': wordMeanings, 'examples': moreExamples, 'phrases': wordPhrases,  'footer': wordFooter}
 
 
 def fetchLexicoDefinition(mongo, word):
