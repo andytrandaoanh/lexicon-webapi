@@ -23,15 +23,6 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/lexicon"
 
 mongo = PyMongo(app)
 
-
-@app.route('/login', methods = ['POST'])
-def handle_login():
-	if request.method == 'POST':
-		data = request.get_json()
-		print(data)
-		return ('login success', 200)
-
-
 @app.route('/words')
 def words():
 	return handleSQL.fetchTopWords(mysql) 
@@ -82,6 +73,4 @@ def get_quotes_by_index(bookID, indexNum):
 def get_definition(word):
 	if request.method == 'GET':
 		return handleSQL.fetchDefinition(mysql, word) 
-
-
 

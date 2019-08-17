@@ -27,6 +27,7 @@ mongo = PyMongo(app)
 @app.route('/definition/<word>',  methods = ['GET'])
 def get_definition(word):
 	if request.method == 'GET':
-		return handleMongo.fetchGoogleDefinition(mongo, word)
+		#return handleMongo.fetchGoogleDefinition(mongo, word)
+		return handleMongo.fetchLexicoDefinition(mongo, word)
 
 

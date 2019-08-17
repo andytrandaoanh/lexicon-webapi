@@ -20,7 +20,7 @@ def fetchWordDetail(mongo, word):
 
 
 
-def processMeaning(meaning):
+def processGoogleMeaning(meaning):
 	#pprint(meaning)
 	meaningList = []
 	for key in meaning:
@@ -45,7 +45,7 @@ def processMeaning(meaning):
 	#	pprint(item)
 	return meaningList
 
-def processDoc(doc):
+def processGoogleDoc(doc):
 	#pprint(doc)
 	wordList = []
 	wordHeader = {}
@@ -53,7 +53,7 @@ def processDoc(doc):
 	for key in doc:
 		if key == 'meaning':
 			objMeaning = doc['meaning']
-			senseList += processMeaning(objMeaning)
+			senseList += processGoogleMeaning(objMeaning)
 		else:
 			wordHeader[key] = doc[key]
 
@@ -105,12 +105,115 @@ def fetchGoogleDefinition(mongo, word):
 		outList = []
 
 		for doc in docList:
-			outList += processDoc(doc)
+			outList += processGoogleDoc(doc)
 			#pprint(wordList)
 		resp = jsonify(outList)
 		resp.status_code = 200
 		return  resp
 		#return ('hello', 200)
+	else:
+		resp = None
+		resp.status_code = 400
+	return  resp	
+
+
+def processLexiconMeanings(senses):
+	#print('\n', senses)
+	newSenseList = []
+	senseList = senses['senses']
+	#print(senseList)\
+	for senseObj in senseList:
+		newObject = {}
+		wordMeaning = ''
+		wordVariant = ''
+		crossReference = ''
+		grammarNotes = ''
+		regionDomain = ''
+		wordRegister = ''
+
+		for key in senseObj:
+			print('sense key:', key)
+			if key == 'sense-number':
+				newObject['number'] = senseObj[key]
+			elif key == 'meaning':
+				wordMeaning = senseObj[key]
+			elif key == 'spelling-variants':
+				wordVariant = ' ' + senseObj[key] + ' '
+			elif key == 'cross-reference':
+				crossReference = ' ' + senseObj[key] + ' '
+			elif key == 'grammer-notes':
+				grammarNotes = ' [' + senseObj[key] + '] '
+			elif key == 'region-domain':
+				regionDomain = ' (' + senseObj[key].strip() + ') '	
+			elif key == 'register':
+				wordRegister = ' [' + senseObj[key].strip() + '] '	
+
+			elif key == 'examples':
+				newObject['example'] = senseObj[key][0]
+		
+		newObject['meaning'] = wordVariant + crossReference + wordMeaning
+		newObject['notes'] = grammarNotes + regionDomain + wordRegister 
+
+		newSenseList.append(newObject)
+
+	return newSenseList
+
+def processLexiconPhrases(phrases):
+	#print(phrases)
+	return []	
+
+def processLexiconDoc(doc):
+	#pprint(doc)
+	
+	
+	wordHeader = {}
+	wordFooter = {}
+	wordMeanings = []
+	wordPhrases = {}
+	headerCategoryList = []
+	headerPhraseList = []
+	headerFields = ('head-word', 'phonetic', 'spelling-variants', 'homograph-index', 'phonetic-transcripts')
+	footerFields = ('word-origin', 'usage')
+	phraseFields = ('phrases', 'phrases-verbs')
+
+	for key in doc:
+		
+		print('\nkey:', key)
+		if key in headerFields:
+			wordHeader[key] = doc[key]
+		elif key in footerFields:
+			wordFooter[key] = doc[key]
+		elif key in phraseFields:
+			headerPhraseList.append(key)
+		else:
+			headerCategoryList.append(key)
+			senseList = processLexiconMeanings(doc[key])
+			meaningObj = {'category': key, 'meanings': senseList}
+			wordMeanings.append(meaningObj)
+
+	wordHeader['categories'] = headerCategoryList
+	wordHeader['phrases'] = headerPhraseList
+
+	return {'header': wordHeader, 'meanings': wordMeanings, 'phrases': wordPhrases,  'footer': wordFooter}
+
+
+def fetchLexicoDefinition(mongo, word):
+	if (word):
+		volumnName = 'lexico'
+		collection = mongo.db[volumnName]
+		data = collection.find({'head-word':word})
+		#pprint(data)
+		docList = unpackData(data)
+		#pprint(docList)
+
+		outList = []
+
+		for doc in docList:
+			outList.append(processLexiconDoc(doc))
+		resp = jsonify(outList)
+		resp.status_code = 200
+		return  resp
+		#return('OK', 200)
 	else:
 		resp = None
 		resp.status_code = 400
